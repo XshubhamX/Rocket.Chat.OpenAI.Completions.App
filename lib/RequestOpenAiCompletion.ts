@@ -38,11 +38,12 @@ export async function OpenAiCompletionRequest(
             },
         })
         .then((ok) => {
+            var result = { success: true, prompt: prompt, content: ok.data, user: sender.id }
             app.getLogger().info(
-                `Got new completion for prompt ${prompt}: `,
-                ok
+                `Got new completion`,
+                result
             );
-            return { success: true, prompt: prompt, content: ok.data, };
+            return result;
         })
         .catch((error) => {
             app.getLogger().error(

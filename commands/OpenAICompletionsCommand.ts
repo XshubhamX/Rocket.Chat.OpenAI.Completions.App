@@ -43,19 +43,18 @@ export class OpenAICompletionsCommand implements ISlashCommand {
                 "Please, provide a question!"
             );
         } else {
+            const prompt_sentence = prompt.join(" ")
             const result = await OpenAiCompletionRequest(
                 this.app,
                 http,
                 read,
-                prompt,
+                prompt_sentence,
                 sender,
             );
             if (result.success){
-                message = `**Prompt**: ${prompt.join(" ")} \n **Answer**:`
-                result.content.choices.map(choice =>{
-                    message = message + '\n' + choice.text
-                })
-                sendMessage(modify, room, sender, message);
+                var before_message = `**Prompt**: ${prompt_sentence}`
+                var markdown_message = before_message + "\n```\n" + result.content.choices[0].text + "\n```"
+                sendMessage(modify, room, sender, markdown_message);
             }
         }
     }
