@@ -1,22 +1,19 @@
 # OpenAI Completions
-Use OpenAi Chat APIs
+Use OpenAi Completions (ChatGPT3) inside Rocket.Chat!
 
-## Getting Started
-Now that you have generated a blank default Rocket.Chat App, what are you supposed to do next?
-Start developing! Open up your favorite editor, our recommended one is Visual Studio code,
-and start working on your App. Once you have something ready to test, you can either
-package it up and manually deploy it to your test instance or you can use the CLI to do so.
-Here are some commands to get started:
-- `rc-apps package`: this command will generate a packaged app file (zip) which can be installed **if** it compiles with TypeScript
-- `rc-apps deploy`: this will do what `package` does but will then ask you for your server url, username, and password to deploy it for you
+## Installing this App
+This app will soon be available on Rocket.Chat Marketplace. While this doesn't happen, [follow this doc on how to manually install it](https://docs.rocket.chat/setup-and-configure/rocket.chat-air-gapped-deployment/manual-app-installation).
 
-## Documentation
-Here are some links to examples and documentation:
-- [Rocket.Chat Apps TypeScript Definitions Documentation](https://rocketchat.github.io/Rocket.Chat.Apps-engine/)
-- [Rocket.Chat Apps TypeScript Definitions Repository](https://github.com/RocketChat/Rocket.Chat.Apps-engine)
-- [Example Rocket.Chat Apps](https://github.com/graywolf336/RocketChatApps)
-- Community Forums
-  - [App Requests](https://forums.rocket.chat/c/rocket-chat-apps/requests)
-  - [App Guides](https://forums.rocket.chat/c/rocket-chat-apps/guides)
-  - [Top View of Both Categories](https://forums.rocket.chat/c/rocket-chat-apps)
-- [#rocketchat-apps on Open.Rocket.Chat](https://open.rocket.chat/channel/rocketchat-apps)
+You can find the [app packages here](https://github.com/dudanogueira/Rocket.Chat.OpenAI.Completions.App/tree/master/dist)
+
+## Using this App
+After installing, [grab your Open AI key](https://platform.openai.com/account/api-keys)
+
+Now, configure your App with those credentials:
+
+![image](https://user-images.githubusercontent.com/1761174/220090344-b96f8e8a-6653-4a9f-9d2f-2db1fae26c2f.png)
+
+for now, you can use it with /openai_completions, like so:
+
+![image](https://user-images.githubusercontent.com/1761174/220090942-13060cc3-6fa6-41da-97a1-eb118dc2c80b.png)
+
