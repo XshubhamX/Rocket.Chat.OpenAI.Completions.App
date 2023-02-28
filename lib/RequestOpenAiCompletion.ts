@@ -39,10 +39,13 @@ export async function OpenAiCompletionRequest(
         })
         .then((ok) => {
             var result = { success: true, prompt: prompt, content: ok.data, user: sender.id }
+            if ('error' in ok.data){
+                result["success"] = false
+            }
             app.getLogger().info(
                 `Got new completion`,
                 result
-            );
+            );            
             return result;
         })
         .catch((error) => {
