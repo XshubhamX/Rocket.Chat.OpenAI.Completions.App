@@ -17,8 +17,8 @@ import { OpenAiCompletionsApp } from "../OpenAiCompletionsApp";
 
 export class OpenAICompletionsCommand implements ISlashCommand {
     public command = "chatgpt";
-    public i18nParamsExample = "ExampleCommand_Params";
-    public i18nDescription = "ExampleCommand_Description";
+    public i18nParamsExample = AppSetting.NAMESPACE + "_SlashCommand_Params";
+    public i18nDescription = AppSetting.NAMESPACE + "_SlashCommand_Description";
     public providesPreview = false;
 
     constructor(private readonly app: OpenAiCompletionsApp) {}

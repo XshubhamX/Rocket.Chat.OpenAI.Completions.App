@@ -7,12 +7,15 @@ export async function sendNotification(
     modify: IModify,
     room: IRoom,
     sender: IUser,
-    message: string
+    message: string,
+    threadId?: string,
 ): Promise<void> {
     let msg = modify.getCreator().startMessage()
         .setRoom(room)
         .setText(message);
-
+    if(threadId){
+        msg.setThreadId(threadId)
+    }
     // uncomment bellow if you want the notification to be sent by the sender
     // instead of the app bot user
     // msg = msg.setSender(sender);

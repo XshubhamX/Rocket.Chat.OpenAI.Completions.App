@@ -1,0 +1,6 @@
+{
+    "OpenAiCompletions_API_KEY_LABEL": "API LABEL",
+    "OpenAiCompletions_MAX_TOKENS_LABEL": "Max words to return",
+    "OpenAiCompletions_AskChatGPT": "Ask ChatGPT",
+    "OpenAiCompletions_SlashCommand_Description": "Ask ChatGPT"
+}
