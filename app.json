@@ -12,5 +12,25 @@
     "nameSlug": "openai-completions",
     "classFile": "OpenAiCompletionsApp.ts",
     "description": "Use OpenAi Completions (ChatGPT)",
-    "implements": []
+    "implements": [],
+    "permissions": [
+        {
+            "name": "ui.registerButtons"
+        },
+        {
+            "name": "room.read"
+        },
+        {
+            "name": "room.write"
+        },
+        {
+            "name": "message.write"
+        },
+        {
+            "name": "slashcommand"
+        },
+        {
+            "name": "networking"
+        }
+    ]
 }
