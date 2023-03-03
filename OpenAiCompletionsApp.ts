@@ -6,24 +6,37 @@ import {
     IModify,
     IPersistence,
     IRead,
-} from '@rocket.chat/apps-engine/definition/accessors';
-import { App } from '@rocket.chat/apps-engine/definition/App';
-import { IAppInfo } from '@rocket.chat/apps-engine/definition/metadata';
-import { IUIKitResponse, UIKitActionButtonInteractionContext, UIKitViewSubmitInteractionContext } from '@rocket.chat/apps-engine/definition/uikit';
-import { OpenAICompletionsCommand } from './commands/OpenAICompletionsCommand';
-import { buttons } from './config/Buttons';
-import { settings } from './config/Settings';
-import { ActionButtonHandler } from './handlers/ActionButtonHandler';
-import { ViewSubmitHandler } from './handlers/ViewSubmit';
+} from "@rocket.chat/apps-engine/definition/accessors";
+import { App } from "@rocket.chat/apps-engine/definition/App";
+import {
+    IMessage,
+    IPostMessageSent,
+} from "@rocket.chat/apps-engine/definition/messages";
+import { IAppInfo } from "@rocket.chat/apps-engine/definition/metadata";
+import { RoomType } from "@rocket.chat/apps-engine/definition/rooms";
+import {
+    IUIKitResponse,
+    UIKitActionButtonInteractionContext,
+    UIKitViewSubmitInteractionContext,
+} from "@rocket.chat/apps-engine/definition/uikit";
+import { OpenAICompletionsCommand } from "./commands/OpenAICompletionsCommand";
+import { buttons } from "./config/Buttons";
+import { settings } from "./config/Settings";
+import { ActionButtonHandler } from "./handlers/ActionButtonHandler";
+import { ViewSubmitHandler } from "./handlers/ViewSubmit";
+import { OpenAiCompletionRequest } from "./lib/RequestOpenAiCompletion";
+import { sendDirect } from "./lib/SendDirect";
+import { sendMessage } from "./lib/SendMessage";
+import { sendNotification } from "./lib/SendNotification";
 
-export class OpenAiCompletionsApp extends App {
+export class OpenAiCompletionsApp extends App implements IPostMessageSent {
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
         super(info, logger, accessors);
     }
 
     public async extendConfiguration(configuration: IConfigurationExtend) {
         await configuration.slashCommands.provideSlashCommand(
-            new OpenAICompletionsCommand(this),
+            new OpenAICompletionsCommand(this)
         );
         // Providing persistant app settings
         await Promise.all(
@@ -73,6 +86,46 @@ export class OpenAiCompletionsApp extends App {
             modify,
             this.getLogger()
         );
-    }    
-    
+    }
+    // register hook to answer directs
+    public async executePostMessageSent(
+        message: IMessage,
+        read: IRead,
+        http: IHttp,
+        persistence: IPersistence,
+        modify: IModify
+    ): Promise<void> {
+        const { text, editedAt, room, sender } = message;
+        // we only want direct with the app username
+        var bot_user = await read.getUserReader().getAppUser();
+        if (
+            bot_user &&
+            message.room.type == RoomType.DIRECT_MESSAGE && // direct messages
+            message.room.userIds?.includes(bot_user?.id) && // that has bot_user id
+            bot_user?.id !== sender.id // and was not sent by the bot itself
+        ) {
+            const result = await OpenAiCompletionRequest(
+                this,
+                http,
+                read,
+                message.text,
+                sender
+            );
+            if (result.success) {
+                var markdown_message =
+                    "```\n" + result.content.choices[0].text + "\n```";
+                sendDirect(sender, read, modify, markdown_message);
+            } else {
+                sendNotification(
+                    modify,
+                    room,
+                    sender,
+                    `**Error!** Could not Request Completion:\n\n` +
+                        result.content.error.message
+                );
+            }
+        }
+
+        return;
+    }
 }

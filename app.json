@@ -12,7 +12,9 @@
     "nameSlug": "openai-chatgpt",
     "classFile": "OpenAiCompletionsApp.ts",
     "description": "Use OpenAi Completions (ChatGPT)",
-    "implements": [],
+    "implements": [
+        "IPostMessageSent"
+    ],
     "permissions": [
         {
             "name": "ui.registerButtons"
