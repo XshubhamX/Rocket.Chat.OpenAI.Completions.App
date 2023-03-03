@@ -13,7 +13,7 @@ export async function sendNotification(
     let msg = modify.getCreator().startMessage()
         .setRoom(room)
         .setText(message);
-    if(threadId){
+    if(threadId !== undefined){
         msg.setThreadId(threadId)
     }
     // uncomment bellow if you want the notification to be sent by the sender

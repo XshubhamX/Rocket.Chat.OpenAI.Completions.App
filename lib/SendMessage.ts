@@ -9,14 +9,21 @@ import { IUser } from "@rocket.chat/apps-engine/definition/users";
 export async function sendMessage(
     modify: IModify,
     room: IRoom,
-    sender: IUser,
-    message: string
+    message: string,
+    sender?: IUser,
+    thread_id?: string
 ): Promise<string> {
     const msg = modify
         .getCreator()
         .startMessage()
-        .setSender(sender)
         .setRoom(room)
         .setText(message);
+    if (thread_id !== undefined){
+        msg.setThreadId(thread_id)
+    }
+    if (sender !== undefined){
+        msg.setSender(sender)
+    }
+    
     return await modify.getCreator().finish(msg);
 }

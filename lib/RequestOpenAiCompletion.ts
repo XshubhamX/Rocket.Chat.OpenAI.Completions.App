@@ -38,14 +38,21 @@ export async function OpenAiCompletionRequest(
             },
         })
         .then((ok) => {
-            var result = { success: true, prompt: prompt, content: ok.data, user: sender.id }
-            if ('error' in ok.data){
-                result["success"] = false
+            var result = {
+                success: true,
+                prompt: prompt,
+                content: ok.data,
+                user: sender.id,
+            };
+            if ("error" in ok.data) {
+                result["success"] = false;
+                // this is necessary for the link to be rendered correctly
+                // due to a bug in RC parser.
+                result["content"]["error"]["message"] = result["content"][
+                    "error"
+                ]["message"].replace("api-keys.", "api-keys");
             }
-            app.getLogger().info(
-                `Got new completion`,
-                result
-            );            
+            app.getLogger().info(`Got new completion`, result);
             return result;
         })
         .catch((error) => {
