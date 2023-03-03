@@ -8,6 +8,8 @@ import {
 import { UIKitViewSubmitInteractionContext } from "@rocket.chat/apps-engine/definition/uikit";
 import { AppSetting } from "../config/Settings";
 import { OpenAiCompletionRequest } from "../lib/RequestOpenAiCompletion";
+import { sendDirect } from "../lib/SendDirect";
+import { sendMessage } from "../lib/SendMessage";
 import { sendNotification } from "../lib/SendNotification";
 import { OpenAiCompletionsApp } from "../OpenAiCompletionsApp";
 
@@ -24,6 +26,7 @@ export class ViewSubmitHandler {
         const interaction_data = context.getInteractionData();
 
         console.log("SUBMIT VIEW ", interaction_data);
+        console.log("SUBMIT VIEW STATE ", interaction_data.view.state);
         if (interaction_data.view.id == "ask-chatgpt-submit-view") {
             //var prompt = interaction_data.view.state?.OpenAiCompletions_suggested_prompt
             if (interaction_data.view.state) {
@@ -37,6 +40,10 @@ export class ViewSubmitHandler {
                 // get room from the output option
                 const output_mode = output_option_with_room.split("#")[0];
                 const room_id = output_option_with_room.split("#")[1];
+                var thread_id = output_option_with_room.split("#")[2];
+                if (thread_id == "undefined") {
+                    thread_id = undefined;
+                }
                 const room = await read.getRoomReader().getById(room_id);
                 const user = interaction_data.user;
                 // do request
@@ -60,20 +67,44 @@ export class ViewSubmitHandler {
                             result.content.error.message
                     );
                 } else {
+                    var before_message = `**Prompt**: ${prompt}`;
+                    var markdown_message =
+                        "\n```\n" + result.content.choices[0].text + "\n```";
                     switch (output_mode) {
                         case "notification":
-                            var before_message = `**Prompt**: ${prompt}`;
-                            var markdown_message =
-                                before_message +
-                                "\n```\n" +
-                                result.content.choices[0].text +
-                                "\n```";
-
                             sendNotification(
                                 modify,
                                 room,
                                 user,
-                                markdown_message
+                                before_message + markdown_message,
+                                thread_id
+                            );
+                            break;
+
+                        case "direct":
+                            sendDirect(
+                                user,
+                                read,
+                                modify,
+                                before_message + markdown_message
+                            );
+                            break;
+
+                        case "thread":
+                            sendMessage(
+                                modify,
+                                room,
+                                before_message + markdown_message,
+                                undefined,
+                                thread_id
+                            );
+                            break;
+
+                        case "message":
+                            sendMessage(
+                                modify,
+                                room,
+                                before_message + markdown_message
                             );
                             break;
 

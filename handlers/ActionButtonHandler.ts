@@ -46,72 +46,46 @@ export class ActionButtonHandler {
                     multiline: true,
                 }),
             });
-            // if (message) {
-            //     var elements = [
-            //         blockBuilder.newButtonElement({
-            //             actionId: "send-as-quote",
-            //             text: blockBuilder.newPlainTextObject(
-            //                 "Quote"
-            //             ),
-            //             value: "as thread",
-            //             style: ButtonStyle.PRIMARY,
-            //         }),
-            //         blockBuilder.newButtonElement({
-            //             actionId: "send-as-direct",
-            //             text: blockBuilder.newPlainTextObject("Direct"),
-            //             value: "as direct",
-            //             style: ButtonStyle.PRIMARY,
-            //         }),
-            //     ];
-            //     if (!("threadId" in message)) {
-            //         // message not on a thread, add option
-            //         elements.push(
-            //             blockBuilder.newButtonElement({
-            //                 actionId: "send-as-thread",
-            //                 text: blockBuilder.newPlainTextObject(
-            //                     "Thread"
-            //                 ),
-            //                 value: "as thread",
-            //                 style: ButtonStyle.PRIMARY,
-            //             })
-            //         );
-            //     }
-            //     blockBuilder.addActionsBlock({
-            //         elements: elements,
-            //     });
-            // }
+
+            var thread_id = message?.threadId;
+
             var answer_options = [
                 {
-                    text: blockBuilder.newPlainTextObject("Direct"),
-                    value: "direct#" + room.id,
+                    text: blockBuilder.newPlainTextObject("Send me a Direct"),
+                    value: "direct#" + room.id + "#" + thread_id,
+                },
+                // {
+                //     text: blockBuilder.newPlainTextObject("Quote"),
+                //     value: "quote#"  + room.id + "#" + thread_id,
+                // },
+                {
+                    text: blockBuilder.newPlainTextObject("As a Notification"),
+                    value: "notification#" + room.id + "#" + thread_id,
                 },
                 {
-                    text: blockBuilder.newPlainTextObject("Quote"),
-                    value: "quote#" + room.id,
+                    text: blockBuilder.newPlainTextObject("As a New Message"),
+                    value: "message#" + room.id + "#" + thread_id,
                 },
-                {
-                    text: blockBuilder.newPlainTextObject("Notification"),
-                    value: "notification#" + room.id,
-                },                
             ];
-            var answer_initialValue = 'quote'
-            if (message && !("threadId" in message)) {
-                // add thread as the first option
-                answer_options = [
-                    {
-                        text: blockBuilder.newPlainTextObject("Thread"),
-                        value: "thread#" + room.id,
-                    },
-                ].concat(answer_options)
-                var answer_initialValue = 'thread'
-            }
+            var answer_initialValue =
+                "notification#" + room.id + "#" + thread_id;
+            const thread_value = "thread#" + room.id + "#" + message?.id;
+            answer_initialValue = thread_value;
+            var thread_button_message = "In a Thread";
+            // add thread as the first option
+            answer_options = [
+                {
+                    text: blockBuilder.newPlainTextObject(thread_button_message),
+                    value: thread_value,
+                },
+            ].concat(answer_options);
 
             blockBuilder.addInputBlock({
                 blockId: AppSetting.NAMESPACE + "_ask_chatgpt",
                 optional: false,
                 element: blockBuilder.newStaticSelectElement({
                     placeholder: blockBuilder.newPlainTextObject(
-                        "Out the answer in a..."
+                        "Output the answer in a..."
                     ),
                     actionId: "output_option",
                     initialValue: answer_initialValue,
@@ -132,49 +106,6 @@ export class ActionButtonHandler {
                     style: ButtonStyle.PRIMARY,
                 }),
             });
-            // request completion
-            // const result = await OpenAiCompletionRequest(
-            //     app,
-            //     http,
-            //     read,
-            //     message?.text,
-            //     user
-            // );
-            // if (result.success) {
-            //     const blockBuilder = modify.getCreator().getBlockBuilder();
-            //     const text =
-            //         `**Prompt**:  ${message?.text}` +
-            //         "\n```\n" +
-            //         result.content.choices[0].text +
-            //         "\n```";
-            //     blockBuilder.addSectionBlock({
-            //         text: blockBuilder.newMarkdownTextObject(text),
-            //     });
-            //     // let's open a modal using openModalViewResponse with all those information
-            //     return context.getInteractionResponder().openModalViewResponse({
-            //         title: blockBuilder.newPlainTextObject(
-            //             "ChatGPT has spoken"
-            //         ),
-            //         blocks: blockBuilder.getBlocks(),
-            //     });
-            // } else {
-            //     sendNotification(
-            //         modify,
-            //         room,
-            //         user,
-            //         `**Error!** Could not Request Completion:\n\n` +
-            //             result.content.error.message
-            //     );
-            // }
-            // // show completion with buttons
-            // // if message not in thread:
-            // //   - answer in thread
-            // //   - answer quoted
-            // //   - send me direct
-            // // else message in thread:
-            // //   - answer quoted
-            // //   - send me direct
-            // // dimiss
         }
 
         return context.getInteractionResponder().successResponse();
