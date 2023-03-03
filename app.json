@@ -9,7 +9,7 @@
         "support": "http://github.com/dudanogueira/Rocket.Chat.OpenAI.Completions.App"
     },
     "name": "OpenAI Completions (ChatGPT)",
-    "nameSlug": "openai-completions",
+    "nameSlug": "openai-chatgpt",
     "classFile": "OpenAiCompletionsApp.ts",
     "description": "Use OpenAi Completions (ChatGPT)",
     "implements": [],
