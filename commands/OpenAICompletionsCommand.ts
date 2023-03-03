@@ -35,11 +35,12 @@ export class OpenAICompletionsCommand implements ISlashCommand {
         var message: string;
         if (prompt.length == 0) {
             //console.log("NO PROMPT! ", prompt);
-            await sendMessage(
+            await sendNotification(
                 modify,
                 room,
                 sender,
-                "Please, provide a question!"
+                "Please, provide a question!",
+                context.getThreadId()
             );
         } else {
             const prompt_sentence = prompt.join(" ");
@@ -57,7 +58,7 @@ export class OpenAICompletionsCommand implements ISlashCommand {
                     "\n```\n" +
                     result.content.choices[0].text +
                     "\n```";
-                sendMessage(modify, room, sender, markdown_message);
+                sendMessage(modify, room, markdown_message, undefined, context.getThreadId());
             } else {
                 sendNotification(
                     modify,
