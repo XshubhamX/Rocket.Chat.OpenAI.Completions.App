@@ -13,7 +13,8 @@ Now, configure your App with those credentials:
 
 ![image](https://user-images.githubusercontent.com/1761174/220090344-b96f8e8a-6653-4a9f-9d2f-2db1fae26c2f.png)
 
-for now, you can use it with /openai_completions, like so:
+for now, you can use it with /chatgpt, like so:
 
 ![image](https://user-images.githubusercontent.com/1761174/220090942-13060cc3-6fa6-41da-97a1-eb118dc2c80b.png)
 
+Also, you can talk directly with the bot, or use a message as prompt suggestion :)
