@@ -10,18 +10,18 @@ import {
 } from "@rocket.chat/apps-engine/definition/slashcommands";
 import { IUser } from "@rocket.chat/apps-engine/definition/users";
 import { AppSetting } from "../config/Settings";
-import { OpenAiCompletionRequest } from "../lib/RequestOpenAiCompletion";
+import { OpenAiCompletionRequest } from "../lib/RequestOpenAiChat";
 import { sendMessage } from "../lib/SendMessage";
 import { sendNotification } from "../lib/SendNotification";
-import { OpenAiCompletionsApp } from "../OpenAiCompletionsApp";
+import { OpenAiChatApp } from "../OpenAiChatApp";
 
-export class OpenAICompletionsCommand implements ISlashCommand {
+export class OpenAIChatCommand implements ISlashCommand {
     public command = "chatgpt";
     public i18nParamsExample = AppSetting.NAMESPACE + "_SlashCommand_Params";
     public i18nDescription = AppSetting.NAMESPACE + "_SlashCommand_Description";
     public providesPreview = false;
 
-    constructor(private readonly app: OpenAiCompletionsApp) {}
+    constructor(private readonly app: OpenAiChatApp) {}
 
     public async executor(
         context: SlashCommandContext,
@@ -44,11 +44,12 @@ export class OpenAICompletionsCommand implements ISlashCommand {
             );
         } else {
             const prompt_sentence = prompt.join(" ");
+            const payload = [{"role": "user", "content": prompt_sentence}]
             const result = await OpenAiCompletionRequest(
                 this.app,
                 http,
                 read,
-                prompt_sentence,
+                payload,
                 sender
             );
             if (result.success) {
@@ -56,7 +57,7 @@ export class OpenAICompletionsCommand implements ISlashCommand {
                 var markdown_message =
                     before_message +
                     "\n```\n" +
-                    result.content.choices[0].text +
+                    result.content.choices[0].message.content +
                     "\n```";
                 sendMessage(modify, room, markdown_message, undefined, context.getThreadId());
             } else {

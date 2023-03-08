@@ -5,10 +5,10 @@ import {
 } from "@rocket.chat/apps-engine/definition/accessors";
 import { IUser } from "@rocket.chat/apps-engine/definition/users";
 import { AppSetting } from "../config/Settings";
-import { OpenAiCompletionsApp } from "../OpenAiCompletionsApp";
+import { OpenAiChatApp } from "../OpenAiChatApp";
 
 export async function OpenAiCompletionRequest(
-    app: OpenAiCompletionsApp,
+    app: OpenAiChatApp,
     http: IHttp,
     read: IRead,
     prompt: any,
@@ -19,23 +19,42 @@ export async function OpenAiCompletionRequest(
         .getEnvironmentReader()
         .getSettings()
         .getById(AppSetting.OpenAI_API_KEY);
-    const { value: OPEN_AI_MAX_TOKENS } = await read
+    const { value: OPEN_AI_CHAT_MAX_TOKENS } = await read
         .getEnvironmentReader()
         .getSettings()
-        .getById(AppSetting.OpenAI_MAX_TOKENS);
+        .getById(AppSetting.OpenAI_CHAT_MAX_TOKENS);
+    const { value: OPEN_AI_ORG } = await read
+        .getEnvironmentReader()
+        .getSettings()
+        .getById(AppSetting.OpenAI_ORG);
+    const { value: OPEN_AI_CHAT_TEMPERATURE } = await read
+        .getEnvironmentReader()
+        .getSettings()
+        .getById(AppSetting.OpenAI_CHAT_TEMPERATURE);
     // request completion and return
+    var headers = {
+        Authorization: "Bearer " + API_KEY,
+        "Content-Type": "application/json",
+    };
+    if (OPEN_AI_ORG) {
+        headers["OpenAI-Organization"] = OPEN_AI_ORG;
+    }
+    var temperature = parseFloat(OPEN_AI_CHAT_TEMPERATURE)
+    // if temperature is not a float or integer
+    if(!temperature){
+        temperature = 1
+    }
+    const payload = {
+        user: sender.id,
+        model: "gpt-3.5-turbo",
+        messages: prompt,
+        max_tokens: OPEN_AI_CHAT_MAX_TOKENS,
+        temperature: temperature,
+    };
     return http
-        .post("https://api.openai.com/v1/completions", {
-            headers: {
-                Authorization: "Bearer " + API_KEY,
-            },
-            data: {
-                user: sender.id,
-                model: "text-davinci-003",
-                prompt: prompt,
-                temperature: 0,
-                max_tokens: OPEN_AI_MAX_TOKENS,
-            },
+        .post("https://api.openai.com/v1/chat/completions", {
+            headers: headers,
+            data: payload,
         })
         .then((ok) => {
             var result = {
@@ -52,7 +71,12 @@ export async function OpenAiCompletionRequest(
                     "error"
                 ]["message"].replace("api-keys.", "api-keys");
             }
-            app.getLogger().info(`Got new completion`, result);
+            app.getLogger().info(
+                `Got new completion`,
+                result,
+                `for the payload`,
+                payload
+            );
             return result;
         })
         .catch((error) => {

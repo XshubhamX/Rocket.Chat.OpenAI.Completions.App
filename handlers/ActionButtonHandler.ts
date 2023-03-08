@@ -12,13 +12,13 @@ import {
     UIKitActionButtonInteractionContext,
 } from "@rocket.chat/apps-engine/definition/uikit";
 import { AppSetting } from "../config/Settings";
-import { OpenAiCompletionRequest } from "../lib/RequestOpenAiCompletion";
+import { OpenAiCompletionRequest } from "../lib/RequestOpenAiChat";
 import { sendNotification } from "../lib/SendNotification";
-import { OpenAiCompletionsApp } from "../OpenAiCompletionsApp";
+import { OpenAiChatApp } from "../OpenAiChatApp";
 
 export class ActionButtonHandler {
     public async executor(
-        app: OpenAiCompletionsApp,
+        app: OpenAiChatApp,
         context: UIKitActionButtonInteractionContext,
         read: IRead,
         http: IHttp,
