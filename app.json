@@ -10,7 +10,7 @@
     },
     "name": "OpenAI ChatGPT",
     "nameSlug": "chatgpt",
-    "classFile": "OpenAiCompletionsApp.ts",
+    "classFile": "OpenAiChatApp.ts",
     "description": "OpenAI ChatGPT Integration with Rocket.Chat",
     "implements": [
         "IPostMessageSent"

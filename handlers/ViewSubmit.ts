@@ -7,15 +7,15 @@ import {
 } from "@rocket.chat/apps-engine/definition/accessors";
 import { UIKitViewSubmitInteractionContext } from "@rocket.chat/apps-engine/definition/uikit";
 import { AppSetting } from "../config/Settings";
-import { OpenAiCompletionRequest } from "../lib/RequestOpenAiCompletion";
+import { OpenAiCompletionRequest } from "../lib/RequestOpenAiChat";
 import { sendDirect } from "../lib/SendDirect";
 import { sendMessage } from "../lib/SendMessage";
 import { sendNotification } from "../lib/SendNotification";
-import { OpenAiCompletionsApp } from "../OpenAiCompletionsApp";
+import { OpenAiChatApp } from "../OpenAiChatApp";
 
 export class ViewSubmitHandler {
     public async executor(
-        app: OpenAiCompletionsApp,
+        app: OpenAiChatApp,
         context: UIKitViewSubmitInteractionContext,
         read: IRead,
         http: IHttp,
@@ -51,7 +51,7 @@ export class ViewSubmitHandler {
                     app,
                     http,
                     read,
-                    prompt,
+                    [{"role": "user", "content": prompt}],
                     user
                 );
                 if (!room) {
@@ -69,7 +69,7 @@ export class ViewSubmitHandler {
                 } else {
                     var before_message = `**Prompt**: ${prompt}`;
                     var markdown_message =
-                        "\n```\n" + result.content.choices[0].text + "\n```";
+                        "\n```\n" + result.content.choices[0].message.content + "\n```";
                     switch (output_mode) {
                         case "notification":
                             sendNotification(

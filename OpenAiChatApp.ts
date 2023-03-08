@@ -19,24 +19,24 @@ import {
     UIKitActionButtonInteractionContext,
     UIKitViewSubmitInteractionContext,
 } from "@rocket.chat/apps-engine/definition/uikit";
-import { OpenAICompletionsCommand } from "./commands/OpenAICompletionsCommand";
+import { OpenAIChatCommand } from "./commands/OpenAIChatCommand";
 import { buttons } from "./config/Buttons";
 import { settings } from "./config/Settings";
 import { ActionButtonHandler } from "./handlers/ActionButtonHandler";
 import { ViewSubmitHandler } from "./handlers/ViewSubmit";
-import { OpenAiCompletionRequest } from "./lib/RequestOpenAiCompletion";
+import { OpenAiCompletionRequest } from "./lib/RequestOpenAiChat";
 import { sendDirect } from "./lib/SendDirect";
 import { sendMessage } from "./lib/SendMessage";
 import { sendNotification } from "./lib/SendNotification";
 
-export class OpenAiCompletionsApp extends App implements IPostMessageSent {
+export class OpenAiChatApp extends App implements IPostMessageSent {
     constructor(info: IAppInfo, logger: ILogger, accessors: IAppAccessors) {
         super(info, logger, accessors);
     }
 
     public async extendConfiguration(configuration: IConfigurationExtend) {
         await configuration.slashCommands.provideSlashCommand(
-            new OpenAICompletionsCommand(this)
+            new OpenAIChatCommand(this)
         );
         // Providing persistant app settings
         await Promise.all(
@@ -108,12 +108,12 @@ export class OpenAiCompletionsApp extends App implements IPostMessageSent {
                 this,
                 http,
                 read,
-                message.text,
+                [{"role": "user", "content": message.text}],
                 sender
             );
             if (result.success) {
                 var markdown_message =
-                    "```\n" + result.content.choices[0].text + "\n```";
+                    "```\n" + result.content.choices[0].message.content + "\n```";
                 sendDirect(sender, read, modify, markdown_message);
             } else {
                 sendNotification(
