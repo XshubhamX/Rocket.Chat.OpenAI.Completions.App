@@ -11,10 +11,21 @@ After installing, [grab your Open AI key](https://platform.openai.com/account/ap
 
 Now, configure your App with those credentials:
 
-![image](https://user-images.githubusercontent.com/1761174/220090344-b96f8e8a-6653-4a9f-9d2f-2db1fae26c2f.png)
+![image](https://user-images.githubusercontent.com/1761174/223877973-208e0e95-26fb-4117-adaf-22439ea0a955.png)
 
-for now, you can use it with /chatgpt, like so:
+### Use with /chatgpt
+You can use it with /chatgpt, like so:
 
-![image](https://user-images.githubusercontent.com/1761174/220090942-13060cc3-6fa6-41da-97a1-eb118dc2c80b.png)
+![image](https://user-images.githubusercontent.com/1761174/223879215-4482a3ea-dd3c-4c6e-aed7-8687b112a2e9.png)
 
-Also, you can talk directly with the bot, or use a message as prompt suggestion :)
+### Use the message action button
+Or you can call as a message action button:
+
+![image](https://user-images.githubusercontent.com/1761174/223878804-6c144c3f-3252-48a6-81c0-5354aaeacb5f.png)
+
+![image](https://user-images.githubusercontent.com/1761174/223879586-4b404231-fa74-47f7-99e3-dfc55aa43109.png)
+
+
+### Or send a direct message to the App user:
+![image](https://user-images.githubusercontent.com/1761174/223879917-cb02f0c0-bd37-411b-9593-7738d05f4b7d.png)
+
