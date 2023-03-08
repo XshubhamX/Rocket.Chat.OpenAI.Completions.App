@@ -4,14 +4,14 @@
     "requiredApiVersion": "^1.19.0",
     "iconFile": "icon.png",
     "author": {
-        "name": "Duda Nogueira",
-        "homepage": "http://github.com/dudanogueira",
-        "support": "http://github.com/dudanogueira/Rocket.Chat.OpenAI.Completions.App"
+        "name": "Rocket.Chat Technologies Corp.",
+        "homepage": "https://github.com/RocketChat/Rocket.Chat",
+        "support": "https://github.com/RocketChat/Rocket.Chat"
     },
-    "name": "OpenAI Completions (ChatGPT)",
-    "nameSlug": "openai-chatgpt",
+    "name": "OpenAI ChatGPT",
+    "nameSlug": "chatgpt",
     "classFile": "OpenAiCompletionsApp.ts",
-    "description": "Use OpenAi Completions (ChatGPT)",
+    "description": "OpenAI ChatGPT Integration with Rocket.Chat",
     "implements": [
         "IPostMessageSent"
     ],
