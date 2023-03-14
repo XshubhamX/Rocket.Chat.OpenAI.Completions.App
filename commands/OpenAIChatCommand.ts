@@ -56,9 +56,7 @@ export class OpenAIChatCommand implements ISlashCommand {
                 var before_message = `**Prompt**: ${prompt_sentence}`;
                 var markdown_message =
                     before_message +
-                    "\n```\n" +
-                    result.content.choices[0].message.content +
-                    "\n```";
+                    result.content.choices[0].message.content;
                 sendMessage(modify, room, markdown_message, undefined, context.getThreadId());
             } else {
                 sendNotification(
