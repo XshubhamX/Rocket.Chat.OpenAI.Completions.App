@@ -112,8 +112,7 @@ export class OpenAiChatApp extends App implements IPostMessageSent {
                 sender
             );
             if (result.success) {
-                var markdown_message =
-                    "```\n" + result.content.choices[0].message.content + "\n```";
+                var markdown_message = result.content.choices[0].message.content;
                 sendDirect(sender, read, modify, markdown_message);
             } else {
                 sendNotification(

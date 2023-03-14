@@ -72,10 +72,7 @@ export class ViewSubmitHandler {
                                 );
                             } else {
                                 var before_message = `**Prompt**: ${prompt}`;
-                                var markdown_message =
-                                    "\n```\n" +
-                                    result.content.choices[0].message.content +
-                                    "\n```";
+                                var markdown_message = result.content.choices[0].message.content
                                 switch (output_mode) {
                                     case "notification":
                                         sendNotification(
