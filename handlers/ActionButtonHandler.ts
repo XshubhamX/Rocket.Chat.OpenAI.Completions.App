@@ -37,7 +37,7 @@ export class ActionButtonHandler {
             blockBuilder.addInputBlock({
                 blockId: AppSetting.NAMESPACE + "_ask_chatgpt",
                 label: {
-                    text: `Prompt:`,
+                    text: `Prompt`,
                     type: TextObjectType.PLAINTEXT,
                 },
                 element: blockBuilder.newPlainTextInputElement({
@@ -51,7 +51,7 @@ export class ActionButtonHandler {
 
             var answer_options = [
                 {
-                    text: blockBuilder.newPlainTextObject("Send me a Direct"),
+                    text: blockBuilder.newPlainTextObject("Send me a direct message"),
                     value: "direct#" + room.id + "#" + thread_id,
                 },
                 // {
@@ -59,11 +59,11 @@ export class ActionButtonHandler {
                 //     value: "quote#"  + room.id + "#" + thread_id,
                 // },
                 {
-                    text: blockBuilder.newPlainTextObject("As a Notification"),
+                    text: blockBuilder.newPlainTextObject("As a notification"),
                     value: "notification#" + room.id + "#" + thread_id,
                 },
                 {
-                    text: blockBuilder.newPlainTextObject("As a New Message"),
+                    text: blockBuilder.newPlainTextObject("As a new message"),
                     value: "message#" + room.id + "#" + thread_id,
                 },
             ];
@@ -71,7 +71,7 @@ export class ActionButtonHandler {
                 "notification#" + room.id + "#" + thread_id;
             const thread_value = "thread#" + room.id + "#" + message?.id;
             answer_initialValue = thread_value;
-            var thread_button_message = "In a Thread";
+            var thread_button_message = "Thread";
             // add thread as the first option
             answer_options = [
                 {
@@ -83,16 +83,16 @@ export class ActionButtonHandler {
             blockBuilder.addInputBlock({
                 blockId: AppSetting.NAMESPACE + "_ask_chatgpt",
                 optional: false,
-                element: blockBuilder.newStaticSelectElement({
+                element: blockBuilder.newMultiStaticElement({
                     placeholder: blockBuilder.newPlainTextObject(
-                        "Output the answer in a..."
+                        "Output response as..."
                     ),
                     actionId: "output_option",
-                    initialValue: answer_initialValue,
+                    initialValue: [answer_initialValue],
                     options: answer_options,
                 }),
                 label: blockBuilder.newPlainTextObject(
-                    "How to output the answer?"
+                    "Output"
                 ),
             });
             return context.getInteractionResponder().openModalViewResponse({
