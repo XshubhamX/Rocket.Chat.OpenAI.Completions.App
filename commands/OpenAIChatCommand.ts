@@ -3,12 +3,10 @@ import {
     IModify,
     IRead,
 } from "@rocket.chat/apps-engine/definition/accessors";
-import { IRoom, RoomType } from "@rocket.chat/apps-engine/definition/rooms";
 import {
     ISlashCommand,
     SlashCommandContext,
 } from "@rocket.chat/apps-engine/definition/slashcommands";
-import { IUser } from "@rocket.chat/apps-engine/definition/users";
 import { AppSetting } from "../config/Settings";
 import { OpenAiCompletionRequest } from "../lib/RequestOpenAiChat";
 import { sendMessage } from "../lib/SendMessage";
@@ -33,24 +31,18 @@ export class OpenAIChatCommand implements ISlashCommand {
         const prompt = context.getArguments();
         const room = context.getRoom();
         const sender = context.getSender();
-        var message: string;
+        const threadId = context.getThreadId()
+
         if (prompt.length == 0) {
             var askChatGPT_Modal = createAskChatGPTModal(
-                modify, room
+                modify, room, undefined, threadId
             )
             const triggerId = context.getTriggerId();
             if (!triggerId) {
                 return this.app.getLogger().error('TRIGGER UNDEFINED');
             }
-            return modify.getUiController().openModalView(askChatGPT_Modal, { triggerId }, sender);        
-            //console.log("NO PROMPT! ", prompt);
-            // await sendNotification(
-            //     modify,
-            //     room,
-            //     sender,
-            //     "Please, provide a question!",
-            //     context.getThreadId()
-            // );
+            return modify.getUiController().openModalView(askChatGPT_Modal, { triggerId }, sender);
+
         } else {
             const prompt_sentence = prompt.join(" ");
             const payload = [{"role": "user", "content": prompt_sentence}]

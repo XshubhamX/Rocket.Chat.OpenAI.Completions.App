@@ -25,8 +25,6 @@ export class ViewSubmitHandler {
     ) {
         const interaction_data = context.getInteractionData();
 
-        console.log("SUBMIT VIEW ", interaction_data);
-        console.log("SUBMIT VIEW STATE ", interaction_data.view.state);
         if (interaction_data.view.id == "ask-chatgpt-submit-view") {
             //var prompt = interaction_data.view.state?.OpenAiCompletions_suggested_prompt
             if (interaction_data.view.state) {
@@ -47,7 +45,6 @@ export class ViewSubmitHandler {
                     user
                 ).then((result) => {
                     for (var output of output_options) {
-                        console.log("INITIATING OUTPUT ", output);
                         // get room, output_mode and other from the output option
                         const output_mode = output.split("#")[0];
                         const room_id = output.split("#")[1];
@@ -55,73 +52,81 @@ export class ViewSubmitHandler {
                         if (thread_id == "undefined") {
                             thread_id = undefined;
                         }
-                        read.getRoomReader().getById(room_id).then(room=>{
-
-                            if (!room) {
-                                return { success: false, message: "No room found" };
-                            }
-    
-                            if (!result.success) {
-                                console.log("error! ", result);
-                                sendNotification(
-                                    modify,
-                                    room,
-                                    user,
-                                    `**Error!** Could not Request Completion:\n\n` +
-                                        result.content.error.message
-                                );
-                            } else {
-                                var before_message = `**Prompt**: ${prompt}`;
-                                var markdown_message = result.content.choices[0].message.content
-                                switch (output_mode) {
-                                    case "notification":
-                                        sendNotification(
-                                            modify,
-                                            room,
-                                            user,
-                                            before_message + markdown_message,
-                                            thread_id
-                                        );
-                                        break;
-    
-                                    case "direct":
-                                        sendDirect(
-                                            user,
-                                            read,
-                                            modify,
-                                            before_message + markdown_message
-                                        );
-                                        break;
-    
-                                    case "thread":
-                                        sendMessage(
-                                            modify,
-                                            room,
-                                            before_message + markdown_message,
-                                            undefined,
-                                            thread_id
-                                        );
-                                        break;
-    
-                                    case "message":
-                                        sendMessage(
-                                            modify,
-                                            room,
-                                            before_message + markdown_message
-                                        );
-                                        break;
-    
-                                    default:
-                                        break;
+                        read.getRoomReader()
+                            .getById(room_id)
+                            .then((room) => {
+                                if (!room) {
+                                    return {
+                                        success: false,
+                                        message: "No room found",
+                                    };
                                 }
-                            }
-                            return {
-                                success: true,
-                            };
 
-                        })
+                                if (!result.success) {
+                                    sendNotification(
+                                        modify,
+                                        room,
+                                        user,
+                                        `**Error!** Could not Request Completion:\n\n` +
+                                            result.content.error.message
+                                    );
+                                } else {
+                                    var before_message = `**Prompt**: ${prompt}`;
+                                    var markdown_message =
+                                        result.content.choices[0].message
+                                            .content;
+                                    switch (output_mode) {
+                                        case "notification":
+                                            sendNotification(
+                                                modify,
+                                                room,
+                                                user,
+                                                before_message +
+                                                    "\n" +
+                                                    markdown_message,
+                                                thread_id
+                                            );
+                                            break;
 
-                        
+                                        case "direct":
+                                            sendDirect(
+                                                user,
+                                                read,
+                                                modify,
+                                                before_message +
+                                                    "\n" +
+                                                    markdown_message
+                                            );
+                                            break;
+
+                                        case "thread":
+                                            sendMessage(
+                                                modify,
+                                                room,
+                                                before_message +
+                                                    markdown_message,
+                                                undefined,
+                                                thread_id
+                                            );
+                                            break;
+
+                                        case "message":
+                                            sendMessage(
+                                                modify,
+                                                room,
+                                                before_message +
+                                                    markdown_message
+                                            );
+                                            break;
+
+                                        default:
+                                            break;
+                                    }
+                                }
+                                return {
+                                    success: true,
+                                };
+                            });
                     }
                 });
             }

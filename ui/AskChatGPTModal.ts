@@ -1,5 +1,4 @@
 import { IModify } from "@rocket.chat/apps-engine/definition/accessors";
-import { IMessage } from "@rocket.chat/apps-engine/definition/messages";
 import { IRoom } from "@rocket.chat/apps-engine/definition/rooms";
 import {
     BlockElementType,
@@ -13,7 +12,7 @@ export function createAskChatGPTModal(
     modify: IModify,
     room: IRoom,
     initialPrompt?: string,
-    message?: IMessage,
+    threadId?: string,
     viewId?: string
 ): IUIKitContextualBarViewParam {
     const blocks = modify.getCreator().getBlockBuilder();
@@ -35,7 +34,7 @@ export function createAskChatGPTModal(
     var answer_options = [
         {
             text: blocks.newPlainTextObject("Send me a direct message"),
-            value: "direct#" + room.id + "#" + message?.threadId,
+            value: "direct#" + room.id + "#" + threadId,
         },
         // {
         //     text: blockBuilder.newPlainTextObject("Quote"),
@@ -43,17 +42,17 @@ export function createAskChatGPTModal(
         // },
         {
             text: blocks.newPlainTextObject("As a notification"),
-            value: "notification#" + room.id + "#" + message?.threadId,
+            value: "notification#" + room.id + "#" + threadId,
         },
         {
             text: blocks.newPlainTextObject("As a new message"),
-            value: "message#" + room.id + "#" + message?.threadId,
+            value: "message#" + room.id + "#" + threadId,
         },
     ];
-    var answer_initialValue = "notification#" + room.id + "#" + message?.threadId;
-    // if message was provided, show as thread.
-    if(message){
-        const thread_value = "thread#" + room.id + "#" + message?.id;
+    var answer_initialValue = "notification#" + room.id + "#" + threadId;
+    // if threadId was provided, show as thread.
+    if(threadId){
+        const thread_value = "thread#" + room.id + "#" + threadId;
         answer_initialValue = thread_value;
         var thread_button_message = "Thread";
         // add thread as the first option
@@ -63,6 +62,10 @@ export function createAskChatGPTModal(
                 value: thread_value,
             },
         ].concat(answer_options);
+    }else{
+        // no thread, default to message
+        answer_initialValue = "message#" + room.id + "#" + threadId
+        // option to response in a
     }
 
     blocks.addInputBlock({
