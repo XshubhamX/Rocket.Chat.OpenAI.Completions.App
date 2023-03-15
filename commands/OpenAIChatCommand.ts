@@ -14,6 +14,7 @@ import { OpenAiCompletionRequest } from "../lib/RequestOpenAiChat";
 import { sendMessage } from "../lib/SendMessage";
 import { sendNotification } from "../lib/SendNotification";
 import { OpenAiChatApp } from "../OpenAiChatApp";
+import { createAskChatGPTModal } from "../ui/AskChatGPTModal";
 
 export class OpenAIChatCommand implements ISlashCommand {
     public command = "chatgpt";
@@ -34,14 +35,22 @@ export class OpenAIChatCommand implements ISlashCommand {
         const sender = context.getSender();
         var message: string;
         if (prompt.length == 0) {
+            var askChatGPT_Modal = createAskChatGPTModal(
+                modify, room
+            )
+            const triggerId = context.getTriggerId();
+            if (!triggerId) {
+                return this.app.getLogger().error('TRIGGER UNDEFINED');
+            }
+            return modify.getUiController().openModalView(askChatGPT_Modal, { triggerId }, sender);        
             //console.log("NO PROMPT! ", prompt);
-            await sendNotification(
-                modify,
-                room,
-                sender,
-                "Please, provide a question!",
-                context.getThreadId()
-            );
+            // await sendNotification(
+            //     modify,
+            //     room,
+            //     sender,
+            //     "Please, provide a question!",
+            //     context.getThreadId()
+            // );
         } else {
             const prompt_sentence = prompt.join(" ");
             const payload = [{"role": "user", "content": prompt_sentence}]
